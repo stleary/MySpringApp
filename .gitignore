@@ -2,6 +2,7 @@
 .gitattributes
 .project
 .settings/
+.idea
 bin
 
 # Compiled class file
