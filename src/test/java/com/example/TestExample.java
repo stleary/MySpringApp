@@ -1,15 +1,31 @@
 package com.example;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestExample {
+
+    private SimpleGreetingService simpleGreetingService;
+
+    @Before
+    public void setUp() throws Exception {
+        simpleGreetingService = new SimpleGreetingService();
+
+        Field prefixField = SimpleGreetingService.class.getDeclaredField("prefix");
+        prefixField.setAccessible(true);
+        prefixField.set(simpleGreetingService, "Hello");
+    }
 
     // --- Existing controller test ---
 
     @Test
     public void testIndexReturnsGreeting() {
-        Example example = new Example(new GreetingService());
+        Example example = new Example(simpleGreetingService, new TimeService());
         String result = example.index();
         assertEquals("Greetings from Spring Boot! /", result);
     }
@@ -18,22 +34,19 @@ public class TestExample {
 
     @Test
     public void testGreetWithName() {
-        GreetingService service = new GreetingService();
-        String result = service.greet("Alice");
+        String result = simpleGreetingService.greet("Alice");
         assertEquals("Hello, Alice!", result);
     }
 
     @Test
     public void testGreetWithEmptyName() {
-        GreetingService service = new GreetingService();
-        String result = service.greet("");
+        String result = simpleGreetingService.greet("");
         assertEquals("Hello, World!", result);
     }
 
     @Test
     public void testGreetWithNull() {
-        GreetingService service = new GreetingService();
-        String result = service.greet(null);
+        String result = simpleGreetingService.greet(null);
         assertEquals("Hello, World!", result);
     }
 
@@ -41,17 +54,15 @@ public class TestExample {
 
     @Test
     public void testGreetingEndpointWithName() {
-        GreetingService service = new GreetingService();
-        Example example = new Example(service);
+        Example example = new Example(simpleGreetingService, new TimeService());
         String result = example.index("Bob");
-        assertEquals("Hello, Bob!", result);
+        assertEquals("Hello, Bob! (currentTime)", result);
     }
 
     @Test
     public void testGreetingEndpointWithEmptyName() {
-        GreetingService service = new GreetingService();
-        Example example = new Example(service);
+        Example example = new Example(simpleGreetingService, new TimeService());
         String result = example.index("");
-        assertEquals("Hello, World!", result);
+        assertEquals("Hello, World! (currentTime)", result);
     }
 }
