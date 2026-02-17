@@ -17,7 +17,7 @@ public class Example {
     private final TimeService timeService;
 
     @Autowired
-    public Example(SimpleGreetingService greetingService, TimeService timeService) {
+    public Example(GreetingService greetingService, TimeService timeService) {
         this.greetingService = greetingService;
         this.timeService = timeService;
     }
